@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 ContentPilot – AI-Powered Social Media Content Planner
 
-## Getting Started
+**ContentPilot** is an AI-driven tool that helps creators, marketers, and businesses generate, organize, and plan social media content across platforms like LinkedIn, Instagram, Twitter, and more.
 
-First, run the development server:
+🎯 Boost your productivity, maintain consistency, and let AI help you generate high-quality posts.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 🔮 **AI-Powered Content Generator** – Use GPT-4 to generate captions and content ideas.
+- 📅 **Content Calendar** – Visualize and manage your weekly/monthly posting schedule.
+- ✍️ **Post Editor & Drafts** – Edit, regenerate, and manage all your content in one place.
+- 🎯 **Multi-Platform Support** – Plan content for LinkedIn, Twitter, Instagram, and others.
+- 📤 **Scheduling Options** – Set publish dates, and export content for use on your favorite tools.
+- 📊 **Dashboard Analytics** – Track post stats, platforms used, and your content strategy.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+| Layer       | Stack                              |
+|------------|-------------------------------------|
+| Frontend   | Next.js (App Router), Tailwind CSS  |
+| Backend    | API Routes (REST), Prisma ORM       |
+| Database   | PostgreSQL / Supabase               |
+| Auth       | Clerk (or NextAuth.js)              |
+| AI Engine  | OpenAI (GPT-4)                      |
+| Optional   | Stripe (for Pro features), Uploadthing (if images), Cron jobs/Zapier for scheduling
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📸 Preview
 
-## Deploy on Vercel
+> [!NOTE]
+> Screenshots coming soon…
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📦 Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/contentpilot.git
+   cd contentpilot
+
+
+2.Install dependencies
+  npm install
+
+3.Set up environment variables
+  DATABASE_URL=your_postgresql_connection_url
+  OPENAI_API_KEY=your_openai_api_key
+  CLERK_SECRET_KEY=your_clerk_secret_key
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+
+4.Push Prisma schema
+  npx prisma db push
+
+
+5.Run the dev server
+  npm run dev
+
+
+🤝 Contributing
+Contributions are welcome! Please fork the repo and submit a PR with improvements or new features.
+
+
+👨‍💻 Author
+Built with ❤️ by Tanujeet Singh
