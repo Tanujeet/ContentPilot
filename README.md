@@ -66,5 +66,3 @@
 Contributions are welcome! Please fork the repo and submit a PR with improvements or new features.
 
 
-👨‍💻 Author
-Built with ❤️ by Tanujeet Singh
