@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
@@ -14,5 +13,89 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id          String       @id // This is Clerk user ID
+  email       String       @unique
+  posts       Post[]
+  generations Generation[] // <- Add this line
+  createdAt   DateTime     @default(now())
+  templates   Template[]
+}
 
+model Post {
+  id          String      @id @default(cuid())
+  title       String
+  content     String
+  type        ContentType @default(BLOG)
+  status      PostStatus  @default(DRAFT)
+  generated   Boolean     @default(false)
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  schedules Schedule[]
+}
+
+model Generation {
+  id        String   @id @default(cuid())
+  prompt    String
+  response  String
+  model     String // gpt-4 / gpt-3.5
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Schedule {
+  id     String @id @default(cuid())
+  postId String
+  post   Post   @relation(fields: [postId], references: [id])
+
+  platform    Platform       @default(WEB)
+  status      ScheduleStatus @default(PENDING)
+  scheduledAt DateTime
+  publishedAt DateTime?
+  createdAt   DateTime       @default(now())
+}
+
+enum Platform {
+  WEB
+  TWITTER
+  LINKEDIN
+  MEDIUM
+}
+
+enum ScheduleStatus {
+  PENDING
+  PUBLISHED
+  FAILED
+}
+
+model Template {
+  id        String      @id @default(cuid())
+  name      String
+  type      ContentType @default(BLOG)
+  prompt    String // Example: "Write a blog post about {topic} for {audience}"
+  createdAt DateTime    @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+enum ContentType {
+  BLOG
+  TWEET
+  THREAD
+  LINKEDIN
+  EMAIL
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+}
