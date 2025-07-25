@@ -19,5 +19,41 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: Request) {}
-export async function DELETE(req: Request) {}
+export async function POST(req: Request) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const { title, description, content, type } = await req.json();
+
+  if (!title || !description || !content) {
+    return new NextResponse("Title, description, and content are required", {
+      status: 400,
+    });
+  }
+
+  try {
+    const newTemplate = await prisma.template.create({
+      data: {
+        name: title,
+        prompt: `${description}\n\n${content}`,
+        userId,
+        type: type || "BLOG", // fallback to default if type not provided
+      },
+    });
+
+    return NextResponse.json(newTemplate);
+  } catch (error) {
+    console.error("Failed to create template:", error);
+    return new NextResponse("Internal server error", { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  const { userId } = await auth();
+  if (!userId) {
+    return new NextResponse("Unauthorised", { status: 401 });
+  }
+}
