@@ -1,3 +1,4 @@
+import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,8 +9,13 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    const fetchTemplates = await prisma.template.findMany({
+      where: { userId },
+    });
+    return NextResponse.json(fetchTemplates);
   } catch (e) {
     console.error("Failed to fetch templates", e);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
