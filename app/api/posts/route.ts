@@ -25,4 +25,33 @@ export async function POST(req: NextRequest) {
   if (!userId) {
     return new NextResponse("Unauthorised", { status: 401 });
   }
+
+  const { title, content, type, status, generated, scheduledAt } =
+    await req.json();
+  if (!title || !content || !type || !status) {
+    return new NextResponse("Missing required fields", { status: 400 });
+  }
+
+  if (status === "SCHEDULED" && !scheduledAt) {
+    return new NextResponse("Missing scheduledAt for scheduled post", {
+      status: 400,
+    });
+  }
+
+  try {
+    const createPost = await prisma.post.create({
+      data: {
+        title: title,
+        content: content,
+        type: type,
+        scheduledAt: scheduledAt,
+        status: status,
+        generated: generated,
+        userId: userId,
+      },
+    });
+    return NextResponse.json(createPost);
+  } catch (e) {
+    console.error("failed to create a post", e);
+  }
 }
