@@ -37,10 +37,6 @@ export async function PUT(
 }
 
 
-
-
-
-
 export async function DELETE(
   req: Request,
   { params: paramsPromise }: { params: Promise<{ id: string }> }
