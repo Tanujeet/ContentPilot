@@ -14,15 +14,32 @@ export async function PUT(
   try {
     const { id } = await paramsPromise;
     const { title, description, content, type } = await req.json();
-
-    if (!id) {
-      return new NextResponse("No id found", { status: 404 });
+    if (!id || !title || !description || !content) {
+      return new NextResponse("Missing required fields", { status: 400 });
     }
+
+    const updatedTemplate = await prisma.template.update({
+      where: {
+        id,
+        userId,
+      },
+      data: {
+        name: title,
+        prompt: `${description}\n\n${content}`,
+        type: type || "BLOG",
+      },
+    });
+    return NextResponse.json(updatedTemplate);
   } catch (e) {
     console.error("Failed to edit template", e);
     return new NextResponse("Internal server error", { status: 404 });
   }
 }
+
+
+
+
+
 
 export async function DELETE(
   req: Request,
