@@ -5,11 +5,12 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) {
-    return new NextResponse("Unauthorised", { status: 401 });
+    return new NextResponse("Unauthorized", { status: 401 });
   }
   try {
     const fetchPost = await prisma.post.findMany({
       where: { userId },
+      orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(fetchPost);
   } catch (e) {
