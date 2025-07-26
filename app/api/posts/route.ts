@@ -17,3 +17,11 @@ export async function GET(req: NextRequest) {
     return new NextResponse("Internal server error", { status: 500 });
   }
 }
+
+
+export async function POST(req: NextRequest) {
+  const { userId } = await auth();
+  if (!userId) {
+    return new NextResponse("Unauthorised", { status: 401 });
+  }
+}
