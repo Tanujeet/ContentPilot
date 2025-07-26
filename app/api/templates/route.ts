@@ -65,7 +65,7 @@ export async function DELETE(req: Request) {
     }
 
     const deletedTemplate = await prisma.template.deleteMany({
-      where: { userId },
+      where: { id },
     });
 
     return NextResponse.json(deletedTemplate);
