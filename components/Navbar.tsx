@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <header className="flex justify-between items-center px-6 gap-4 h-16 bg-[#1A1325] border-b border-bg-[#1A1325] sticky top-0 z-50">
       <div>
-        <h1 className="text-xl font-semibold  px-2 text-white">ContentCraft</h1>
+        <h1 className="text-xl font-semibold  px-2 text-white">ContentPilot</h1>
       </div>
       <SignedOut>
         <SignInButton mode="modal">
