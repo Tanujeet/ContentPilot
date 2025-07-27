@@ -26,20 +26,21 @@ const Page = () => {
           <h1 className="text-3xl font-bold ml-10 mt-10">
             Welcome back , {username}
           </h1>
-          <div className=" flex-grid grid grid-cols-3 gap-6 mt-10">
+          <div className=" flex-grid grid grid-cols-3 gap-6 mt-10 ">
             {stats.map((stat, idx) => (
-              <Card key={idx}>
+              <Card key={idx} className="bg-[#1A1325]  text-white h-fit">
                 <CardHeader>
                   <CardTitle>{stat.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>{stat.num}</p>
+                  <h1 className="text-2xl">{stat.num}</h1>
                 </CardContent>
               </Card>
             ))}
           </div>
         </div>
       </section>
+      <section></section>
     </main>
   );
 };
