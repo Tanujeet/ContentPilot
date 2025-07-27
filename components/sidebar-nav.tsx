@@ -24,9 +24,9 @@ export const SidebarNav = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="h-screen w-[250px] shrink-0 bg-[#1A1325] text-white flex flex-col justify-between py-6 px-4">
+    <aside className="w-[250px] shrink-0 bg-[#1A1325] text-white flex flex-col justify-between py-6 px-4">
       <div>
-        <nav className="flex flex-col gap-2">
+        <nav className="flex flex-col gap-7">
           {links.map((link) => (
             <Link
               key={link.href}
