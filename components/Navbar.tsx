@@ -1,5 +1,4 @@
 import {
-  ClerkProvider,
   SignInButton,
   SignUpButton,
   SignedIn,
@@ -9,15 +8,18 @@ import {
 
 const Navbar = () => {
   return (
-    <header className="flex justify-end items-center p-4 gap-4 h-16 bg-white shadow-sm sticky top-0 z-50">
+    <header className="flex justify-between items-center px-6 gap-4 h-16 bg-[#1A1325] border-b border-bg-[#1A1325] sticky top-0 z-50">
+      <div>
+        <h1 className="text-xl font-semibold  px-2 text-white">ContentCraft</h1>
+      </div>
       <SignedOut>
         <SignInButton mode="modal">
-          <button className="bg-white border text-sm rounded-full px-4 py-2 hover:bg-gray-50 transition">
+          <button className="bg-white text-black border border-gray-300 text-sm rounded-full px-4 py-2 hover:bg-gray-100 transition">
             Sign In
           </button>
         </SignInButton>
         <SignUpButton mode="modal">
-          <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm h-10 px-4 hover:bg-[#5938d7] transition">
+          <button className="bg-black text-white rounded-full font-medium text-sm h-10 px-4 hover:bg-gray-800 transition">
             Sign Up
           </button>
         </SignUpButton>

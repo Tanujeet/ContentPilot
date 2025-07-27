@@ -26,7 +26,6 @@ export const SidebarNav = () => {
   return (
     <aside className="h-screen w-[250px] shrink-0 bg-[#1A1325] text-white flex flex-col justify-between py-6 px-4">
       <div>
-        <h1 className="text-xl font-semibold mb-10 px-2">ContentCraft</h1>
         <nav className="flex flex-col gap-2">
           {links.map((link) => (
             <Link
