@@ -10,8 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useEffect } from "react";
 
 const Page = () => {
+  useEffect(() => {}, []);
   const stats = [
     { title: "Total Post", num: "120" },
     { title: "Templates", num: "34" },
