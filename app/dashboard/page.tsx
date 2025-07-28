@@ -42,7 +42,11 @@ const Page = () => {
           </div>
         </div>
       </section>
-      <section></section>
+      <section className="mt-20 ml-10">
+        <div>
+          <h1 className="text-3xl font-bold">Recent Activity</h1>
+        </div>
+      </section>
     </main>
   );
 };
