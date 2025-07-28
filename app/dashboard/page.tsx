@@ -11,17 +11,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { axiosInstance } from "@/lib/axios";
+import { error } from "console";
 
 const Page = () => {
-  useEffect(() => {}, []);
-  const stats = [
-    { title: "Total Post", num: "120" },
-    { title: "Templates", num: "34" },
-    { title: "Generations", num: "300" },
-  ];
   const { user } = useUser();
   const username = user?.firstName || "User";
+  const [stats, setStats] = useState([
+    { title: "Total Post", num: "..." },
+    { title: "Templates", num: "..." },
+    { title: "Generations", num: "..." },
+  ]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axiosInstance.get("/Stats");
+        setStats(res.data);
+      } catch (e) {
+        console.error("Failed to fetch stats:", e);
+      }
+    };
+    fetchStats();
+  }, []);
   return (
     <main>
       <section>
