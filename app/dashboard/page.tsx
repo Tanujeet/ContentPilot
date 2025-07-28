@@ -28,6 +28,7 @@ const statArray = [
   { title: "Templates", num: stats.totalTemplates },
   { title: "Generations", num: stats.totalGen },
 ];
+const [recentActivity, setrecentActivity] = useState([]);
 
 useEffect(() => {
   const fetchStats = async () => {
@@ -39,6 +40,13 @@ useEffect(() => {
     }
   };
   fetchStats();
+}, []);
+useEffect(() => {
+  const fetchActivity = async () => {
+    const res = await axiosInstance.get("/recent-activity");
+    setrecentActivity(res.data);
+  };
+  fetchActivity();
 }, []);
 return (
   <main>
