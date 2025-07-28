@@ -1,15 +1,16 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useEffect } from "react";
 
 const Page = () => {
@@ -42,9 +43,27 @@ const Page = () => {
           </div>
         </div>
       </section>
-      <section className="mt-20 ml-10">
+      <section className="mt-20 ml-10 text-white">
         <div>
           <h1 className="text-3xl font-bold">Recent Activity</h1>
+          <Table className="mt-4 border border-black rounded-2xl ">
+            <TableCaption>A list of your recent invoices.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Title</TableHead>
+                <TableHead>Status</TableHead>
+
+                <TableHead className="text-right">Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="font-medium">INV001</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>Credit Card</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
       </section>
     </main>
