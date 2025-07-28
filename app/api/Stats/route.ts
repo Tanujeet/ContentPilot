@@ -11,9 +11,9 @@ export async function GET(req: Request) {
 try {
     const totalPost = await prisma.post.count({ where: { userId } })
     const totalTemplates = await prisma.template.count({ where: { userId } })
-    const totalgen = await prisma.generation.count({ where: { userId } })
-    
-    return NextResponse.json({totalPost,totalTemplates,totalgen})
+    const totalGen = await prisma.generation.count({ where: { userId } });
+
+    return NextResponse.json({ totalPost, totalTemplates, totalGen });
 } catch (e) {
     console.error(e)
     return new NextResponse("Internal Server Error",{status:500})
