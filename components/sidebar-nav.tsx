@@ -17,7 +17,6 @@ const links = [
   { label: "Templates", href: "/templates", icon: <IconLayout size={18} /> },
   { label: "Generate", href: "/generate", icon: <IconWand size={18} /> },
   { label: "Schedule", href: "/schedule", icon: <IconCalendar size={18} /> },
-  { label: "History", href: "/history", icon: <IconHistory size={18} /> },
 ];
 
 export const SidebarNav = () => {
