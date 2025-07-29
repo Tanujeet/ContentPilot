@@ -33,7 +33,7 @@ const Page = () => {
     { title: "Templates", num: stats.totalTemplates },
     { title: "Generations", num: stats.totalGen },
   ];
-
+  const [isLoading, setisLoding] = useState(false);
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
 
   useEffect(() => {
@@ -49,11 +49,19 @@ const Page = () => {
   }, []);
   useEffect(() => {
     const fetchActivity = async () => {
-      const res = await axiosInstance.get("/recent-activity");
-      setRecentActivity(res.data);
+      try {
+        setisLoding(true);
+        const res = await axiosInstance.get("/recent-activity");
+        setRecentActivity(res.data);
+      } catch (err) {
+        console.error("Error fetching recent activity", err);
+      } finally {
+        setisLoding(false);
+      }
     };
     fetchActivity();
   }, []);
+
   return (
     <main>
       <section>
@@ -79,7 +87,6 @@ const Page = () => {
         <div>
           <h1 className="text-3xl font-bold">Recent Activity</h1>
           <Table className="mt-4 border border-black rounded-2xl ">
-            <TableCaption>A list of your recent invoices.</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]  text-white">Title</TableHead>
@@ -89,17 +96,31 @@ const Page = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {recentActivity.map((activity, idx) => (
-                <TableRow key={idx}>
-                  <TableCell className="font-medium">
-                    {activity.title}
-                  </TableCell>
-                  <TableCell>{activity.status}</TableCell>
-                  <TableCell className="text-right">
-                    {activity.createdAt}
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center py-4">
+                    Loading...
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : recentActivity.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center py-4">
+                    No recent activity
+                  </TableCell>
+                </TableRow>
+              ) : (
+                recentActivity.map((activity, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell className="font-medium">
+                      {activity.title}
+                    </TableCell>
+                    <TableCell>{activity.status}</TableCell>
+                    <TableCell className="text-right">
+                      {new Date(activity.createdAt).toLocaleDateString()}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
