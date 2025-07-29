@@ -84,9 +84,9 @@ const Page = () => {
         </div>
       </section>
       <section className="mt-20 ml-10 text-white">
-        <div>
+        <div className="bg-[#1A1325] p-6 rounded-2xl">
           <h1 className="text-3xl font-bold">Recent Activity</h1>
-          <Table className="mt-4 border border-black rounded-2xl ">
+          <Table className="border-2 border-white rounded-2xl overflow-hidden">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]  text-white">Title</TableHead>
