@@ -1,4 +1,3 @@
-// components/ui/sidebar-nav.tsx
 "use client";
 import { cn } from "@/lib/utils";
 import {
@@ -6,7 +5,6 @@ import {
   IconLayout,
   IconWand,
   IconCalendar,
-  IconHistory,
   IconPlus,
 } from "@tabler/icons-react";
 import Link from "next/link";
