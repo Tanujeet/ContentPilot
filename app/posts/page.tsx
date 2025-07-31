@@ -1,14 +1,9 @@
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const Page = () => {
+  const content = [
+    { status: "Published", Title: "Tips and tricks", date: "30" },
+  ];
   return (
     <main className="p-10">
       <section>
@@ -17,14 +12,17 @@ const Page = () => {
       </section>
       <section className="mt-10">
         <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
-            </CardContent>
-          </Card>
+          {content.map((contents, idx) => (
+            <Card key={idx}>
+              <CardHeader>
+                <CardTitle>{contents.status}</CardTitle>
+                <CardTitle>{contents.Title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>{contents.date}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
     </main>
