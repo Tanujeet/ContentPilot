@@ -22,7 +22,7 @@ const Page = () => {
                 <CardTitle>{contents.status}</CardTitle>
                 <CardTitle>{contents.Title}</CardTitle>
               </CardHeader>
-              hy
+              hy there
               <CardContent>
                 <p>{contents.date}</p>
               </CardContent>
