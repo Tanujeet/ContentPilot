@@ -22,7 +22,7 @@ const Page = () => {
                 <CardTitle>{contents.status}</CardTitle>
                 <CardTitle>{contents.Title}</CardTitle>
               </CardHeader>
-              hy there ypu are a
+              hy there ypu are a ass
               <CardContent>
                 <p>{contents.date}</p>
               </CardContent>
