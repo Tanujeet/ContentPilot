@@ -16,11 +16,18 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    const fetchcontent = async () => {
-      const res = await axiosInstance.get("/posts");
-      setposts(res.data);
+    const fetchContent = async () => {
+      setLoading(true);
+      try {
+        const res = await axiosInstance.get("/posts");
+        setposts(res.data);
+      } catch (e) {
+        console.error("Failed to fetch content details :", e);
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchContent;
   }, []);
   return (
     <main className="p-10">
