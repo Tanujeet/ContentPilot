@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 const Page = () => {
+  const [post, setpost] = useState([]);
   const [loading, setLoading] = useState(false);
   const content = [
     { status: "Published", Title: "Tips and tricks", date: "30" },
