@@ -40,8 +40,7 @@ const Page = () => {
           {content.map((contents, idx) => (
             <Card key={idx} className="bg-[#1A1325] text-white">
               <CardHeader>
-                your
-                <p>{contents.status}</p>
+                your a<p>{contents.status}</p>
                 <CardTitle>{contents.Title}</CardTitle>
               </CardHeader>
 
