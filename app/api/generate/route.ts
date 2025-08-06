@@ -12,27 +12,32 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { templateId, inputs } = await req.json();
+    const { name, description, category, audience } = await req.json();
 
-    // 1. Get the template
-    const template = await prisma.template.findFirst({
-      where: {
-        id: templateId,
-        userId,
-      },
-    });
-
-    if (!template) {
-      return new NextResponse("Template not found", { status: 404 });
+    if (!name || !description || !category) {
+      return new NextResponse("Missing required fields", { status: 400 });
     }
 
-    // 2. Format prompt
-    let prompt = template.prompt;
-    for (const key in inputs) {
-      prompt = prompt.replace(`{${key}}`, inputs[key]);
-    }
+    // 1. Build Prompt
+    const prompt = `
+Generate a complete landing page copy for the following:
 
-    // 3. Call Cohere API
+Startup Name: ${name}
+One-Liner: ${description}
+Category: ${category}
+Target Audience: ${audience}
+
+Return the result in structured JSON:
+{
+  "hero": { "heading": "", "subheading": "", "cta": "" },
+  "features": [ { "title": "", "desc": "" }, ... ],
+  "about": "",
+  "cta": "",
+  "meta": { "title": "", "description": "" }
+}
+    `.trim();
+
+    // 2. Call Cohere API
     const cohereRes = await fetch(COHERE_URL, {
       method: "POST",
       headers: {
@@ -40,21 +45,21 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "command", // or use "command-light", depending on your pricing tier
+        model: "command",
         prompt,
-        max_tokens: 300,
+        max_tokens: 500,
         temperature: 0.7,
       }),
     });
 
     const cohereData = await cohereRes.json();
-
     const output = cohereData.generations?.[0]?.text?.trim();
+
     if (!output) {
       return new NextResponse("No output generated", { status: 500 });
     }
 
-    // 4. Save generation
+    // 3. Save to DB
     const saved = await prisma.generation.create({
       data: {
         prompt,
