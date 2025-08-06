@@ -12,7 +12,6 @@ import { usePathname } from "next/navigation";
 
 const links = [
   { label: "Posts", href: "/posts", icon: <IconFileText size={18} /> },
-  { label: "Templates", href: "/templates", icon: <IconLayout size={18} /> },
   { label: "Generate", href: "/generate", icon: <IconWand size={18} /> },
   { label: "Schedule", href: "/schedule", icon: <IconCalendar size={18} /> },
 ];
