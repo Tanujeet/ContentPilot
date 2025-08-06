@@ -2,7 +2,6 @@
 import { cn } from "@/lib/utils";
 import {
   IconFileText,
-  IconLayout,
   IconWand,
   IconCalendar,
   IconPlus,
@@ -11,6 +10,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
+  { label: "Dashboard", href: "/dashboard", icon: <IconFileText size={18} /> },
   { label: "Posts", href: "/posts", icon: <IconFileText size={18} /> },
   { label: "Generate", href: "/generate", icon: <IconWand size={18} /> },
   { label: "Schedule", href: "/schedule", icon: <IconCalendar size={18} /> },
