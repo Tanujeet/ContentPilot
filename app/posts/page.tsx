@@ -4,15 +4,22 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "@/lib/axios";
+
+type Post = {
+  id: string;
+  title: string;
+  content: string;
+  type: string;
+  scheduledAt: string;
+  status: string;
+  generated: boolean;
+  userId: string;
+  createdAt: string;
+};
+
 const Page = () => {
-  const content = [
-    { status: "Published", Title: "Tips and tricks", date: "30" },
-    { status: "Published", Title: "Tips and tricks", date: "30" },
-    { status: "Published", Title: "Tips and tricks", date: "30" },
-    { status: "Published", Title: "Tips and tricks", date: "30" },
-    { status: "Published", Title: "Tips and tricks", date: "30" },
-  ];
-  const [posts, setposts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,14 +27,14 @@ const Page = () => {
       setLoading(true);
       try {
         const res = await axiosInstance.get("/posts");
-        setposts(res.data);
+        setPosts(res.data);
       } catch (e) {
         console.error("Failed to fetch content details :", e);
       } finally {
         setLoading(false);
       }
     };
-    fetchContent;
+    fetchContent();
   }, []);
   return (
     <main className="p-10">
@@ -36,20 +43,27 @@ const Page = () => {
         <Input placeholder="Search" className="text-white" />
       </section>
       <section className="mt-10">
-        <div className="grid grid-cols-3 gap-6 mt-10">
-          {content.map((contents, idx) => (
-            <Card key={idx} className="bg-[#1A1325] text-white">
-              <CardHeader>
-                <p>{contents.status}</p>
-                <CardTitle>{contents.Title}</CardTitle>
-              </CardHeader>
-
-              <CardContent>
-                <p>{contents.date}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center text-muted-foreground">Loading...</div>
+        ) : posts.length === 0 ? (
+          <div className="text-center font-light border-b p-2">
+            No recent posts
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-6 mt-10">
+            {posts.map((post, idx) => (
+              <Card key={idx} className="bg-[#1A1325] text-white">
+                <CardHeader>
+                  <p>{post.status}</p>
+                  <CardTitle>{post.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>{new Date(post.createdAt).toDateString()}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </section>
     </main>
   );
