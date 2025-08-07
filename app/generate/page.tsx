@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -27,6 +28,7 @@ const Page = () => {
                 <SelectItem value="system">Casual</SelectItem>
               </SelectContent>
             </Select>
+            <Button>Generate Content</Button>
           </div>
         </div>
       </section>
