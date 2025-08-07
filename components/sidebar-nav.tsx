@@ -13,7 +13,6 @@ const links = [
   { label: "Dashboard", href: "/dashboard", icon: <IconFileText size={18} /> },
   { label: "Posts", href: "/posts", icon: <IconFileText size={18} /> },
   { label: "Generate", href: "/generate", icon: <IconWand size={18} /> },
-  { label: "Schedule", href: "/schedule", icon: <IconCalendar size={18} /> },
 ];
 
 export const SidebarNav = () => {
