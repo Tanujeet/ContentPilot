@@ -30,13 +30,6 @@
 
 ---
 
-## 📸 Preview
-
-> [!NOTE]
-> Screenshots coming soon…
-
----
-
 ## 📦 Installation
 
 1. **Clone the repository**
