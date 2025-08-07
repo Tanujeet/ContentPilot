@@ -41,6 +41,21 @@ const Page = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
+            <Label htmlFor="type-select" className="font-medium">
+              Content Type
+            </Label>
+            <Select defaultValue="blog">
+              <SelectTrigger id="type-select">
+                <SelectValue placeholder="Select a content type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="blog">Blog</SelectItem>
+                <SelectItem value="tweet">Tweet</SelectItem>
+                <SelectItem value="linkedin">LinkedIn</SelectItem>
+                <SelectItem value="email">Email</SelectItem>
+              </SelectContent>
+            </Select>
+
             <Label htmlFor="tone-select" className="font-medium">
               Tone
             </Label>
@@ -52,8 +67,6 @@ const Page = () => {
                 <SelectItem value="professional">Professional</SelectItem>
                 <SelectItem value="friendly">Friendly</SelectItem>
                 <SelectItem value="casual">Casual</SelectItem>
-                <SelectItem value="witty">Witty</SelectItem>
-                <SelectItem value="inspirational">Inspirational</SelectItem>
               </SelectContent>
             </Select>
           </div>
