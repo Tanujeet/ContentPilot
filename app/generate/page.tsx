@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -12,6 +19,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { Lightbulb, Sparkles } from "lucide-react";
+import { Spinner } from "@/components/Spinner";
 
 const Page = () => {
   return (
@@ -19,13 +27,6 @@ const Page = () => {
       <div className="w-full max-w-2xl p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-200 flex flex-col space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-white">Your Idea</h1>
-          <Button
-            variant="ghost"
-            className="text-sm font-semibold text-indigo-600 hover:text-indigo-800"
-          >
-            <Lightbulb className="w-4 h-4 mr-2" />
-            ✨Suggest Ideas
-          </Button>
         </div>
 
         <div>
@@ -78,13 +79,24 @@ const Page = () => {
           </div>
         </div>
 
-        <Button
-          size="lg"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-base font-semibold"
-        >
-          <Sparkles className="w-5 h-5 mr-2" />
-          Generate Content
-        </Button>
+        <Dialog>
+          <DialogTrigger>
+            <Button
+              size="lg"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-base font-semibold"
+            >
+              <Sparkles className="w-5 h-5 mr-1" />
+              Generate Content
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+             <DialogDescription>
+                <Spinner />
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
     </main>
   );
