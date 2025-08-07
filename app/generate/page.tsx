@@ -80,7 +80,7 @@ const Page = () => {
         </div>
 
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button
               size="lg"
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-base font-semibold"
@@ -91,7 +91,8 @@ const Page = () => {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-             <DialogDescription>
+              <DialogTitle>Your Dialog Title</DialogTitle>
+              <DialogDescription>
                 <Spinner />
               </DialogDescription>
             </DialogHeader>
