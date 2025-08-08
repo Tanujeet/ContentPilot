@@ -12,29 +12,21 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { idea, description, category, audience } = await req.json();
+const { idea, contentType, tone, tags } = await req.json();
 
-    if (!idea || !description || !category) {
-      return new NextResponse("Missing required fields", { status: 400 });
-    }
-
-    const prompt = `
-Generate a complete landing page copy for the following:
-
-Startup Name: ${idea}
-One-Liner: ${description}
-Category: ${category}
-Target Audience: ${audience}
-
-Return the result in structured JSON:
-{
-  "hero": { "heading": "", "subheading": "", "cta": "" },
-  "features": [ { "title": "", "desc": "" }, ... ],
-  "about": "",
-  "cta": "",
-  "meta": { "title": "", "description": "" }
+if (!idea || !contentType || !tone) {
+  return new NextResponse("Missing required fields", { status: 400 });
 }
-    `.trim();
+
+const prompt = `
+Generate a ${contentType} in a ${tone} tone about the following idea:
+"${idea}"
+
+Make sure to incorporate these keywords if possible: ${tags || "none"}.
+
+Return the result as plain text.
+`.trim();
+
 
     const cohereRes = await fetch(COHERE_URL, {
       method: "POST",
