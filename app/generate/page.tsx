@@ -36,7 +36,7 @@ const Page = () => {
     try {
       setLoading(true);
       setGeneratedContent(null);
-      setOpen(true); // open dialog when starting
+      setOpen(true);
 
       const res = await axiosInstance.post("/generate", {
         idea,
@@ -45,10 +45,13 @@ const Page = () => {
         tags,
       });
 
-      setGeneratedContent(res.data.response || "No content generated");
+      // backend se html aa rahi hai
+      setGeneratedContent(res.data.html || "No content generated");
     } catch (e) {
       console.error("failed to generate data", e);
-      setGeneratedContent("Failed to generate content. Please try again.");
+      setGeneratedContent(
+        "<p>Failed to generate content. Please try again.</p>"
+      );
     } finally {
       setLoading(false);
     }
@@ -116,18 +119,21 @@ const Page = () => {
 
         {/* Single Dialog */}
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-3xl">
             <DialogHeader>
               <DialogTitle className="text-black">
                 {loading ? "Generating Content" : "Your Generated Content"}
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription asChild>
                 {loading ? (
                   <div className="flex items-center gap-2">
                     <Spinner />
                   </div>
                 ) : (
-                  <div className="whitespace-pre-wrap">{generatedContent}</div>
+                  <div
+                    className="prose prose-lg max-w-none"
+                    dangerouslySetInnerHTML={{ __html: generatedContent || "" }}
+                  />
                 )}
               </DialogDescription>
             </DialogHeader>
