@@ -150,16 +150,25 @@ const Page = () => {
         </Dialog>
       </div>
 
-      {generatedContent && (
-        <Dialog>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Generate content</DialogTitle>
-              <DialogDescription>{generatedContent}</DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-      )}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {loading ? "Generating Content" : "Your Generated Content"}
+            </DialogTitle>
+            <DialogDescription>
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <Spinner />
+                  Please wait while your AI content is being generated...
+                </div>
+              ) : (
+                <div className="whitespace-pre-wrap">{generatedContent}</div>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 };
