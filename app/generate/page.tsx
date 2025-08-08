@@ -21,6 +21,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Sparkles } from "lucide-react";
 import { Spinner } from "@/components/Spinner";
+import { axiosInstance } from "@/lib/axios";
 
 const Page = () => {
   const [open, setOpen] = useState(false);
@@ -29,19 +30,25 @@ const Page = () => {
   const [contentType, setContentType] = useState("blog");
   const [tone, setTone] = useState("professional");
   const [tags, setTags] = useState("");
+  const [generatedContent, setGeneratedContent] = useState("");
 
   const handleGenerate = async () => {
-    setLoading(true);
-
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setLoading(true);
+      setGeneratedContent("");
 
-      // ✅ Content generated, close dialog
-      setOpen(false);
-    } catch (err) {
-      console.error("Error generating content", err);
-    } finally {
+      const res = await axiosInstance.post("/generate", {
+        idea,
+        contentType,
+        tone,
+        tags,
+      });
+
+      setGeneratedContent(res.data.response || "No content generated");
+      setLoading(false);
+      setOpen(false); // auto-close after success
+    } catch (e) {
+      console.error("failed to generate data", e);
       setLoading(false);
     }
   };
@@ -141,6 +148,13 @@ const Page = () => {
           </DialogContent>
         </Dialog>
       </div>
+
+      {generatedContent && (
+        <div className="mt-6 w-full max-w-2xl p-4 border rounded-lg bg-white shadow">
+          <h2 className="font-bold text-lg mb-2">Generated Content</h2>
+          <p className="whitespace-pre-wrap">{generatedContent}</p>
+        </div>
+      )}
     </main>
   );
 };
