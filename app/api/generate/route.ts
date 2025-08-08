@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 const COHERE_API_KEY = process.env.COHERE_API_KEY;
@@ -12,13 +12,27 @@ export async function POST(req: Request) {
   }
 
   try {
-const { idea, contentType, tone, tags } = await req.json();
+    const { idea, contentType, tone, tags } = await req.json();
+    if (!idea || !contentType || !tone) {
+      return new NextResponse("Missing required fields", { status: 400 });
+    }
 
-if (!idea || !contentType || !tone) {
-  return new NextResponse("Missing required fields", { status: 400 });
-}
+    // ✅ Ensure user exists in DB
+    const userInDB = await prisma.user.findUnique({ where: { id: userId } });
+    if (!userInDB) {
+      const clerkUser = await currentUser();
+      await prisma.user.create({
+        data: {
+          id: userId,
+          email:
+            clerkUser?.emailAddresses?.[0]?.emailAddress ||
+            "unknown@example.com",
+        },
+      });
+    }
 
-const prompt = `
+    // Build prompt
+    const prompt = `
 Generate a ${contentType} in a ${tone} tone about the following idea:
 "${idea}"
 
@@ -27,7 +41,7 @@ Make sure to incorporate these keywords if possible: ${tags || "none"}.
 Return the result as plain text.
 `.trim();
 
-
+    // Call Cohere API
     const cohereRes = await fetch(COHERE_URL, {
       method: "POST",
       headers: {
@@ -35,7 +49,7 @@ Return the result as plain text.
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "command-r-plus", // updated model name
+        model: "command-r-plus",
         prompt,
         max_tokens: 500,
         temperature: 0.7,
@@ -50,11 +64,11 @@ Return the result as plain text.
 
     const cohereData = await cohereRes.json();
     const output = cohereData.generations?.[0]?.text?.trim();
-
     if (!output) {
       return new NextResponse("No output generated", { status: 500 });
     }
 
+    // Parse JSON if present
     let structuredOutput;
     const jsonMatch = output.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
@@ -67,6 +81,7 @@ Return the result as plain text.
       structuredOutput = { raw: output };
     }
 
+    // Save generation
     const saved = await prisma.generation.create({
       data: {
         prompt,
