@@ -18,7 +18,6 @@ export async function POST(req: Request) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
 
-    // 1. Build Prompt
     const prompt = `
 Generate a complete landing page copy for the following:
 
@@ -37,7 +36,6 @@ Return the result in structured JSON:
 }
     `.trim();
 
-    // 2. Call Cohere API
     const cohereRes = await fetch(COHERE_URL, {
       method: "POST",
       headers: {
@@ -52,6 +50,12 @@ Return the result in structured JSON:
       }),
     });
 
+    if (!cohereRes.ok) {
+      const errorText = await cohereRes.text();
+      console.error("Cohere API error:", errorText);
+      return new NextResponse("Cohere API error", { status: 500 });
+    }
+
     const cohereData = await cohereRes.json();
     const output = cohereData.generations?.[0]?.text?.trim();
 
@@ -59,11 +63,17 @@ Return the result in structured JSON:
       return new NextResponse("No output generated", { status: 500 });
     }
 
-    // 3. Save to DB
+    let structuredOutput;
+    try {
+      structuredOutput = JSON.parse(output);
+    } catch {
+      structuredOutput = { raw: output };
+    }
+
     const saved = await prisma.generation.create({
       data: {
         prompt,
-        response: output,
+        response: JSON.stringify(structuredOutput),
         model: "cohere-command",
         userId,
       },
