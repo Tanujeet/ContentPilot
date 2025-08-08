@@ -30,13 +30,13 @@ const Page = () => {
   const [contentType, setContentType] = useState("blog");
   const [tone, setTone] = useState("professional");
   const [tags, setTags] = useState("");
- const [generatedContent, setGeneratedContent] = useState<string | null>(null);
-
+  const [generatedContent, setGeneratedContent] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     try {
       setLoading(true);
-      setGeneratedContent("");
+      setGeneratedContent(null);
+      setOpen(true); // open dialog when starting
 
       const res = await axiosInstance.post("/generate", {
         idea,
@@ -46,10 +46,10 @@ const Page = () => {
       });
 
       setGeneratedContent(res.data.response || "No content generated");
-      setLoading(false);
-      setOpen(false); // auto-close after success
     } catch (e) {
       console.error("failed to generate data", e);
+      setGeneratedContent("Failed to generate content. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -57,30 +57,20 @@ const Page = () => {
   return (
     <main className="flex items-center justify-center mt-20 p-4">
       <div className="w-full max-w-2xl p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-200 flex flex-col space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-white">Your Idea</h1>
-        </div>
+        <h1 className="text-2xl font-bold text-white">Your Idea</h1>
 
-        <div>
-          <Label htmlFor="prompt-input" className="sr-only">
-            Your Idea
-          </Label>
-          <Textarea
-            id="prompt-input"
-            value={idea}
-            onChange={(e) => setIdea(e.target.value)}
-            placeholder="Describe the post you want to create or ask for suggestions..."
-            className="h-40 w-full resize-none text-base"
-          />
-        </div>
+        <Textarea
+          value={idea}
+          onChange={(e) => setIdea(e.target.value)}
+          placeholder="Describe the post you want to create..."
+          className="h-40 w-full resize-none text-base"
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="type-select" className="font-medium">
-              Content Type
-            </Label>
+            <Label>Content Type</Label>
             <Select value={contentType} onValueChange={setContentType}>
-              <SelectTrigger id="type-select">
+              <SelectTrigger>
                 <SelectValue placeholder="Select a content type" />
               </SelectTrigger>
               <SelectContent>
@@ -91,11 +81,9 @@ const Page = () => {
               </SelectContent>
             </Select>
 
-            <Label htmlFor="tone-select" className="font-medium">
-              Tone
-            </Label>
+            <Label>Tone</Label>
             <Select value={tone} onValueChange={setTone}>
-              <SelectTrigger id="tone-select">
+              <SelectTrigger>
                 <SelectValue placeholder="Select a tone" />
               </SelectTrigger>
               <SelectContent>
@@ -105,12 +93,10 @@ const Page = () => {
               </SelectContent>
             </Select>
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="tags-input" className="font-medium">
-              Tags / Keywords
-            </Label>
+            <Label>Tags / Keywords</Label>
             <Input
-              id="tags-input"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
               placeholder="e.g., AI, productivity"
@@ -118,57 +104,36 @@ const Page = () => {
           </div>
         </div>
 
-        <Dialog open={open} onOpenChange={setOpen}>
-          <Button
-            size="lg"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-base font-semibold"
-            onClick={() => {
-              setOpen(true);
-              handleGenerate();
-            }}
-            disabled={loading}
-          >
-            <Sparkles className="w-5 h-5 mr-1" />
-            Generate Content
-          </Button>
+        <Button
+          size="lg"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-base font-semibold"
+          onClick={handleGenerate}
+          disabled={loading}
+        >
+          <Sparkles className="w-5 h-5 mr-1" />
+          Generate Content
+        </Button>
 
+        {/* Single Dialog */}
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Generating Content</DialogTitle>
+              <DialogTitle className="text-black">
+                {loading ? "Generating Content" : "Your Generated Content"}
+              </DialogTitle>
               <DialogDescription>
                 {loading ? (
                   <div className="flex items-center gap-2">
                     <Spinner />
-                    Please wait while your AI content is being generated...
                   </div>
                 ) : (
-                  "Your content is ready!"
+                  <div className="whitespace-pre-wrap">{generatedContent}</div>
                 )}
               </DialogDescription>
             </DialogHeader>
           </DialogContent>
         </Dialog>
       </div>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {loading ? "Generating Content" : "Your Generated Content"}
-            </DialogTitle>
-            <DialogDescription>
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <Spinner />
-                  Please wait while your AI content is being generated...
-                </div>
-              ) : (
-                <div className="whitespace-pre-wrap">{generatedContent}</div>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </main>
   );
 };

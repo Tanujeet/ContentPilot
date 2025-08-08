@@ -32,57 +32,71 @@ export async function POST(req: Request) {
     }
 
     // Build prompt
-    const prompt = `
+const prompt = `
 Generate a ${contentType} in a ${tone} tone about the following idea:
-"${idea} in about 100 words only"
+"${idea}" in about 100 words only.
 
 Make sure to incorporate these keywords if possible: ${tags || "none"}.
 
-Return the result as plain text.
+Format the result in clean HTML with:
+- <h1> for the main title
+- <h2> for subheadings
+- <p> for paragraphs
+- <ul><li> for bullet points if applicable
+Ensure the HTML is well-structured and ready to render directly on a webpage.
 `.trim();
 
-    // Call Cohere API
-    const cohereRes = await fetch(COHERE_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${COHERE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "command-r-plus",
-        prompt,
-        max_tokens: 500,
-        temperature: 0.7,
-      }),
-    });
+// Call Cohere API
+const cohereRes = await fetch(COHERE_URL, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${COHERE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    model: "command-r-plus",
+    prompt,
+    max_tokens: 500,
+    temperature: 0.7,
+  }),
+});
 
-    if (!cohereRes.ok) {
-      const errorText = await cohereRes.text();
-      console.error(`Cohere API error (${cohereRes.status}):`, errorText);
-      return new NextResponse("Cohere API error", { status: 500 });
-    }
+if (!cohereRes.ok) {
+  const errorText = await cohereRes.text();
+  console.error(`Cohere API error (${cohereRes.status}):`, errorText);
+  return new NextResponse("Cohere API error", { status: 500 });
+}
 
-    const cohereData = await cohereRes.json();
-    const output = cohereData.generations?.[0]?.text?.trim();
-    if (!output) {
-      return new NextResponse("No output generated", { status: 500 });
-    }
+const cohereData = await cohereRes.json();
+const output = cohereData.generations?.[0]?.text?.trim();
+if (!output) {
+  return new NextResponse("No output generated", { status: 500 });
+}
 
-    // Parse output (fallback to raw)
-    const finalText = output;
+// Parse JSON if present
+let structuredOutput;
+const jsonMatch = output.match(/\{[\s\S]*\}/);
+if (jsonMatch) {
+  try {
+    structuredOutput = JSON.parse(jsonMatch[0]);
+  } catch {
+    structuredOutput = { raw: output };
+  }
+} else {
+  structuredOutput = { raw: output };
+}
 
-    // Save in DB
-    await prisma.generation.create({
-      data: {
-        prompt,
-        response: finalText, // ✅ sirf plain text store
-        model: "cohere-command-r-plus",
-        userId,
-      },
-    });
+// Save generation
+const saved = await prisma.generation.create({
+  data: {
+    prompt,
+    response: JSON.stringify(structuredOutput),
+    model: "cohere-command-r-plus",
+    userId,
+  },
+});
 
-    // ✅ Return only plain text to frontend
-    return NextResponse.json({ text: finalText });
+return NextResponse.json(saved);
   } catch (error) {
     console.error("Generation error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
