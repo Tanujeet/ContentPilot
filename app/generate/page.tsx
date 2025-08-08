@@ -30,7 +30,8 @@ const Page = () => {
   const [contentType, setContentType] = useState("blog");
   const [tone, setTone] = useState("professional");
   const [tags, setTags] = useState("");
-  const [generatedContent, setGeneratedContent] = useState("");
+ const [generatedContent, setGeneratedContent] = useState<string | null>(null);
+
 
   const handleGenerate = async () => {
     try {

@@ -12,16 +12,16 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { name, description, category, audience } = await req.json();
+    const { idea, description, category, audience } = await req.json();
 
-    if (!name || !description || !category) {
+    if (!idea || !description || !category) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
 
     const prompt = `
 Generate a complete landing page copy for the following:
 
-Startup Name: ${name}
+Startup Name: ${idea}
 One-Liner: ${description}
 Category: ${category}
 Target Audience: ${audience}
@@ -43,7 +43,7 @@ Return the result in structured JSON:
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "command",
+        model: "command-r-plus", // updated model name
         prompt,
         max_tokens: 500,
         temperature: 0.7,
@@ -52,7 +52,7 @@ Return the result in structured JSON:
 
     if (!cohereRes.ok) {
       const errorText = await cohereRes.text();
-      console.error("Cohere API error:", errorText);
+      console.error(`Cohere API error (${cohereRes.status}):`, errorText);
       return new NextResponse("Cohere API error", { status: 500 });
     }
 
@@ -64,9 +64,14 @@ Return the result in structured JSON:
     }
 
     let structuredOutput;
-    try {
-      structuredOutput = JSON.parse(output);
-    } catch {
+    const jsonMatch = output.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        structuredOutput = JSON.parse(jsonMatch[0]);
+      } catch {
+        structuredOutput = { raw: output };
+      }
+    } else {
       structuredOutput = { raw: output };
     }
 
@@ -74,7 +79,7 @@ Return the result in structured JSON:
       data: {
         prompt,
         response: JSON.stringify(structuredOutput),
-        model: "cohere-command",
+        model: "cohere-command-r-plus",
         userId,
       },
     });
