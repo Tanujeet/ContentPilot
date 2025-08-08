@@ -151,10 +151,14 @@ const Page = () => {
       </div>
 
       {generatedContent && (
-        <div className="mt-6 w-full max-w-2xl p-4 border rounded-lg bg-white shadow">
-          <h2 className="font-bold text-lg mb-2">Generated Content</h2>
-          <p className="whitespace-pre-wrap">{generatedContent}</p>
-        </div>
+        <Dialog>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Generate content</DialogTitle>
+              <DialogDescription>{generatedContent}</DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       )}
     </main>
   );
