@@ -73,18 +73,24 @@ Return ONLY HTML with:
       return new NextResponse("No output generated", { status: 500 });
     }
 
+    // Clean HTML
+    const cleanedOutput = output
+      .replace(/\n+/g, "")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+
     // Save to DB
-    const saved = await prisma.generation.create({
+    await prisma.generation.create({
       data: {
         prompt,
-        response: output, // store HTML directly
+        response: cleanedOutput,
         model: "cohere-command-r-plus",
         userId,
       },
     });
 
-    // Return HTML directly
-    return NextResponse.json({ html: output });
+    // Return cleaned HTML
+    return NextResponse.json({ html: cleanedOutput });
   } catch (error) {
     console.error("Generation error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
