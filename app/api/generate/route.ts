@@ -68,30 +68,21 @@ Return the result as plain text.
       return new NextResponse("No output generated", { status: 500 });
     }
 
-    // Parse JSON if present
-    let structuredOutput;
-    const jsonMatch = output.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      try {
-        structuredOutput = JSON.parse(jsonMatch[0]);
-      } catch {
-        structuredOutput = { raw: output };
-      }
-    } else {
-      structuredOutput = { raw: output };
-    }
+    // Parse output (fallback to raw)
+    const finalText = output;
 
-    // Save generation
-    const saved = await prisma.generation.create({
+    // Save in DB
+    await prisma.generation.create({
       data: {
         prompt,
-        response: JSON.stringify(structuredOutput),
+        response: finalText, // ✅ sirf plain text store
         model: "cohere-command-r-plus",
         userId,
       },
     });
 
-    return NextResponse.json(saved);
+    // ✅ Return only plain text to frontend
+    return NextResponse.json({ text: finalText });
   } catch (error) {
     console.error("Generation error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
