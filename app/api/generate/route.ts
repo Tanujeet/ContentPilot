@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     // Build prompt
     const prompt = `
 Generate a ${contentType} in a ${tone} tone about the following idea:
-"${idea}"
+"${idea} in about 100 words only"
 
 Make sure to incorporate these keywords if possible: ${tags || "none"}.
 
