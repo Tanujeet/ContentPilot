@@ -15,6 +15,8 @@ type Post = {
   generated: boolean;
   userId: string;
   createdAt: string;
+  tone?: string;
+  tags?: string;
 };
 
 const Page = () => {
@@ -54,9 +56,12 @@ const Page = () => {
             {posts.map((post, idx) => (
               <Card key={idx} className="bg-[#1A1325] text-white">
                 <CardHeader>
-                  <p>{post.status}</p>
+                  <p className="text-sm text-gray-400">{post.status}</p>
                   <CardTitle>{post.title}</CardTitle>
+                  <p className="text-sm">Tone: {post.tone || "N/A"}</p>
+                  <p className="text-sm">Platform: {post.type}</p>
                 </CardHeader>
+
                 <CardContent>
                   <p>{new Date(post.createdAt).toDateString()}</p>
                 </CardContent>
