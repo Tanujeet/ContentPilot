@@ -22,6 +22,8 @@ model Post {
   title       String
   content     String
   type        ContentType @default(BLOG)
+  tone        String?     
+  tags        String?     
   status      PostStatus  @default(DRAFT)
   generated   Boolean     @default(false)
   scheduledAt DateTime?

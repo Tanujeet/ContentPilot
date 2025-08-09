@@ -79,7 +79,11 @@ Return ONLY HTML with:
       .replace(/\s{2,}/g, " ")
       .trim();
 
-    // Save to DB
+    // Extract <h1> as title
+    let titleMatch = cleanedOutput.match(/<h1[^>]*>(.*?)<\/h1>/i);
+    let extractedTitle = titleMatch ? titleMatch[1].trim() : idea;
+
+    // Save generation log
     await prisma.generation.create({
       data: {
         prompt,
@@ -89,8 +93,22 @@ Return ONLY HTML with:
       },
     });
 
-    // Return cleaned HTML
-    return NextResponse.json({ html: cleanedOutput });
+    // Save as post
+    const savedPost = await prisma.post.create({
+      data: {
+        title: extractedTitle,
+        content: cleanedOutput,
+        type: contentType,
+        tone,
+        tags,
+        PostStatus: "draft", // or published
+        generated: true,
+        userId,
+      },
+    });
+
+    // Return saved post object
+    return NextResponse.json(savedPost);
   } catch (error) {
     console.error("Generation error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
