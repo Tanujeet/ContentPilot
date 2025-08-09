@@ -101,7 +101,7 @@ Return ONLY HTML with:
         type: contentType,
         tone,
         tags,
-        PostStatus: "draft", // or published
+        status: "DRAFT",
         generated: true,
         userId,
       },
