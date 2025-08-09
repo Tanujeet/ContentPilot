@@ -12,6 +12,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+
 type Post = {
   id: string;
   title: string;
@@ -28,8 +36,12 @@ type Post = {
 
 const Page = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-
   const [loading, setLoading] = useState(false);
+
+  // State for View dialog
+  const [viewOpen, setViewOpen] = useState(false);
+  const [viewPost, setViewPost] = useState<Post | null>(null);
+  const [viewLoading, setViewLoading] = useState(false);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -46,15 +58,34 @@ const Page = () => {
     fetchContent();
   }, []);
 
-  const handleEdit = (postId: string) => {
-    console.log("Edit post", postId);
-    // yaha edit ka logic ya navigation dalna hoga
+  const handleView = async (postId: string) => {
+    setViewOpen(true);
+    setViewLoading(true);
+    try {
+      const res = await axiosInstance.get(`/posts/${postId}`);
+      setViewPost(res.data);
+    } catch (e) {
+      setViewPost({
+        id: "",
+        title: "Error",
+        content: "<p>Failed to load post content.</p>",
+        type: "",
+        scheduledAt: "",
+        status: "",
+        generated: false,
+        userId: "",
+        createdAt: "",
+        tone: "",
+        tags: "",
+      });
+    } finally {
+      setViewLoading(false);
+    }
   };
 
   const handleDelete = async (postId: string) => {
-    console.log("Delete post", postId);
     try {
-      const res = await axiosInstance.delete(`/posts/${postId}`);
+      await axiosInstance.delete(`/posts/${postId}`);
       setPosts((prev) => prev.filter((post) => post.id !== postId));
     } catch (e) {
       console.error("Failed to delete post:", e);
@@ -62,80 +93,103 @@ const Page = () => {
     }
   };
 
- const handlePublish = async (postId: string) => {
-   try {
-     const res = await axiosInstance.patch(`/posts/${postId}`);
-     setPosts((prev) =>
-       prev.map((p) => (p.id === postId ? { ...p, status: "PUBLISHED" } : p))
-     );
-   } catch (e) {
-     console.error("Failed to publish:", e);
-     alert("Failed to publish post");
-   }
- };
+  const handlePublish = async (postId: string) => {
+    try {
+      await axiosInstance.patch(`/posts/${postId}`);
+      setPosts((prev) =>
+        prev.map((p) => (p.id === postId ? { ...p, status: "PUBLISHED" } : p))
+      );
+    } catch (e) {
+      console.error("Failed to publish:", e);
+      alert("Failed to publish post");
+    }
+  };
 
- return (
-   <main className="p-10">
-     <section>
-       <h1 className="text-4xl font-bold mb-6">Post</h1>
-       <Input placeholder="Search" className="text-white" />
-     </section>
-     <section className="mt-10">
-       {loading ? (
-         <div className="text-center text-muted-foreground">Loading...</div>
-       ) : posts.length === 0 ? (
-         <div className="text-center font-light border-b p-2">
-           No recent posts
-         </div>
-       ) : (
-         <div className="grid grid-cols-3 gap-6 mt-10">
-           {posts.map((post, idx) => (
-             <Card key={idx} className="bg-[#1A1325] text-white relative">
-               {/* Top right button */}
-               <div className="absolute top-2 right-2">
-                 <DropdownMenu>
-                   <DropdownMenuTrigger asChild>
-                     <Button
-                       variant="ghost"
-                       size="icon"
-                       className="text-gray-400 hover:text-white"
-                     >
-                       <MoreHorizontal className="h-5 w-5" />
-                     </Button>
-                   </DropdownMenuTrigger>
-                   <DropdownMenuContent className="w-40">
-                     <DropdownMenuItem onClick={() => handleEdit(post.id)}>
-                       View
-                     </DropdownMenuItem>
-                     <DropdownMenuItem onClick={() => handleDelete(post.id)}>
-                       Delete
-                     </DropdownMenuItem>
-                     {post.status === "DRAFT" && (
-                       <DropdownMenuItem onClick={() => handlePublish(post.id)}>
-                         Publish
-                       </DropdownMenuItem>
-                     )}
-                   </DropdownMenuContent>
-                 </DropdownMenu>
-               </div>
+  return (
+    <main className="p-10">
+      <section>
+        <h1 className="text-4xl font-bold mb-6">Post</h1>
+        <Input placeholder="Search" className="text-white" />
+      </section>
+      <section className="mt-10">
+        {loading ? (
+          <div className="text-center text-muted-foreground">Loading...</div>
+        ) : posts.length === 0 ? (
+          <div className="text-center font-light border-b p-2">
+            No recent posts
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-6 mt-10">
+            {posts.map((post, idx) => (
+              <Card key={idx} className="bg-[#1A1325] text-white relative">
+                {/* Top right button */}
+                <div className="absolute top-2 right-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-400 hover:text-white"
+                      >
+                        <MoreHorizontal className="h-5 w-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-40">
+                      <DropdownMenuItem onClick={() => handleView(post.id)}>
+                        View
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDelete(post.id)}>
+                        Delete
+                      </DropdownMenuItem>
+                      {post.status === "DRAFT" && (
+                        <DropdownMenuItem
+                          onClick={() => handlePublish(post.id)}
+                        >
+                          Publish
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
 
-               <CardHeader>
-                 <p className="text-sm text-gray-400">{post.status}</p>
-                 <CardTitle>{post.title}</CardTitle>
-                 <p className="text-sm">Tone: {post.tone || "N/A"}</p>
-                 <p className="text-sm">Platform: {post.type}</p>
-               </CardHeader>
+                <CardHeader>
+                  <p className="text-sm text-gray-400">{post.status}</p>
+                  <CardTitle>{post.title}</CardTitle>
+                  <p className="text-sm">Tone: {post.tone || "N/A"}</p>
+                  <p className="text-sm">Platform: {post.type}</p>
+                </CardHeader>
 
-               <CardContent>
-                 <p>{new Date(post.createdAt).toDateString()}</p>
-               </CardContent>
-             </Card>
-           ))}
-         </div>
-       )}
-     </section>
-   </main>
- );
+                <CardContent>
+                  <p>{new Date(post.createdAt).toDateString()}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* View Dialog */}
+      <Dialog open={viewOpen} onOpenChange={setViewOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              {viewLoading ? "Loading..." : viewPost?.title}
+            </DialogTitle>
+            <DialogDescription>
+              {viewLoading ? (
+                <p>Loading post content...</p>
+              ) : (
+                <div
+                  className="prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: viewPost?.content || "" }}
+                />
+              )}
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </main>
+  );
 };
 
 export default Page;

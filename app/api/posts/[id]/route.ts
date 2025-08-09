@@ -119,9 +119,8 @@ export async function GET(
     if (!post || post.userId !== userId) {
       return new NextResponse("Not found", { status: 404 });
     }
-    return NextResponse.json(post);
+    return NextResponse.json
   } catch (e) {
     console.error("Failed to fetch data", e);
-    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
