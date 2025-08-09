@@ -38,14 +38,16 @@ const Page = () => {
       setGeneratedContent(null);
       setOpen(true);
 
-      const res = await axiosInstance.post("/generate", {
-        idea,
-        contentType,
-        tone,
-        tags,
-      });
+const res = await axiosInstance.post("/generate", {
+  idea,
+  contentType,
+  tone,
+  tags,
+});
 
-      setGeneratedContent(res.data.html || "<p>No content generated.</p>");
+setGeneratedContent(
+  res.data.html || res.data.content || "<p>No content generated.</p>"
+);
     } catch (e) {
       console.error("Failed to generate data:", e);
       setGeneratedContent(
