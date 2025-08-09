@@ -102,3 +102,26 @@ export async function PATCH(
     return new NextResponse("Failed to publish post", { status: 500 });
   }
 }
+
+export async function GET(
+  req: NextRequest,
+  { params: paramsPromise }: { params: Promise<{ id: string }> }
+) {
+  const { userId } = await auth();
+  if (userId) {
+    return new NextResponse("Unauthorised", { status: 404 });
+  }
+  const { id } = await paramsPromise;
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id },
+    });
+    if (!post || post.userId !== userId) {
+      return new NextResponse("Not found", { status: 404 });
+    }
+    return NextResponse.json(post);
+  } catch (e) {
+    console.error("Failed to fetch data", e);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
