@@ -93,7 +93,7 @@ export async function PATCH(
   try {
     const updatedPost = await prisma.post.update({
       where: { id },
-      data: { status: "published", publishedAt: new Date() }, // publishedAt optional
+      data: { status: "PUBLISHED", publishedAt: new Date() }, // publishedAt optional
     });
 
     return NextResponse.json(updatedPost);

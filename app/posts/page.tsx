@@ -62,70 +62,80 @@ const Page = () => {
     }
   };
 
-  const handlePublish = async (postId: string) => {
-    console.log("Publish post", postId);
-    // API call karke publish status update karo
-  };
-  return (
-    <main className="p-10">
-      <section>
-        <h1 className="text-4xl font-bold mb-6">Post</h1>
-        <Input placeholder="Search" className="text-white" />
-      </section>
-      <section className="mt-10">
-        {loading ? (
-          <div className="text-center text-muted-foreground">Loading...</div>
-        ) : posts.length === 0 ? (
-          <div className="text-center font-light border-b p-2">
-            No recent posts
-          </div>
-        ) : (
-          <div className="grid grid-cols-3 gap-6 mt-10">
-            {posts.map((post, idx) => (
-              <Card key={idx} className="bg-[#1A1325] text-white relative">
-                {/* Top right button */}
-                <div className="absolute top-2 right-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-gray-400 hover:text-white"
-                      >
-                        <MoreHorizontal className="h-5 w-5" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-40">
-                      <DropdownMenuItem onClick={() => handleEdit(post.id)}>
-                        View
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleDelete(post.id)}>
-                        Delete
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handlePublish(post.id)}>
-                        Publish
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+ const handlePublish = async (postId: string) => {
+   try {
+     const res = await axiosInstance.patch(`/posts/${postId}`);
+     setPosts((prev) =>
+       prev.map((p) => (p.id === postId ? { ...p, status: "PUBLISHED" } : p))
+     );
+   } catch (e) {
+     console.error("Failed to publish:", e);
+     alert("Failed to publish post");
+   }
+ };
 
-                <CardHeader>
-                  <p className="text-sm text-gray-400">{post.status}</p>
-                  <CardTitle>{post.title}</CardTitle>
-                  <p className="text-sm">Tone: {post.tone || "N/A"}</p>
-                  <p className="text-sm">Platform: {post.type}</p>
-                </CardHeader>
+ return (
+   <main className="p-10">
+     <section>
+       <h1 className="text-4xl font-bold mb-6">Post</h1>
+       <Input placeholder="Search" className="text-white" />
+     </section>
+     <section className="mt-10">
+       {loading ? (
+         <div className="text-center text-muted-foreground">Loading...</div>
+       ) : posts.length === 0 ? (
+         <div className="text-center font-light border-b p-2">
+           No recent posts
+         </div>
+       ) : (
+         <div className="grid grid-cols-3 gap-6 mt-10">
+           {posts.map((post, idx) => (
+             <Card key={idx} className="bg-[#1A1325] text-white relative">
+               {/* Top right button */}
+               <div className="absolute top-2 right-2">
+                 <DropdownMenu>
+                   <DropdownMenuTrigger asChild>
+                     <Button
+                       variant="ghost"
+                       size="icon"
+                       className="text-gray-400 hover:text-white"
+                     >
+                       <MoreHorizontal className="h-5 w-5" />
+                     </Button>
+                   </DropdownMenuTrigger>
+                   <DropdownMenuContent className="w-40">
+                     <DropdownMenuItem onClick={() => handleEdit(post.id)}>
+                       View
+                     </DropdownMenuItem>
+                     <DropdownMenuItem onClick={() => handleDelete(post.id)}>
+                       Delete
+                     </DropdownMenuItem>
+                     {post.status === "DRAFT" && (
+                       <DropdownMenuItem onClick={() => handlePublish(post.id)}>
+                         Publish
+                       </DropdownMenuItem>
+                     )}
+                   </DropdownMenuContent>
+                 </DropdownMenu>
+               </div>
 
-                <CardContent>
-                  <p>{new Date(post.createdAt).toDateString()}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </section>
-    </main>
-  );
+               <CardHeader>
+                 <p className="text-sm text-gray-400">{post.status}</p>
+                 <CardTitle>{post.title}</CardTitle>
+                 <p className="text-sm">Tone: {post.tone || "N/A"}</p>
+                 <p className="text-sm">Platform: {post.type}</p>
+               </CardHeader>
+
+               <CardContent>
+                 <p>{new Date(post.createdAt).toDateString()}</p>
+               </CardContent>
+             </Card>
+           ))}
+         </div>
+       )}
+     </section>
+   </main>
+ );
 };
 
 export default Page;
