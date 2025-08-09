@@ -93,12 +93,20 @@ Return ONLY HTML with:
       },
     });
 
+    const normalizedType = String(contentType).toUpperCase();
+
+    if (
+      !["BLOG", "TWEET", "THREAD", "LINKEDIN", "EMAIL"].includes(normalizedType)
+    ) {
+      return new NextResponse("Invalid content type", { status: 400 });
+    }
+
     // Save as post
     const savedPost = await prisma.post.create({
       data: {
         title: extractedTitle,
         content: cleanedOutput,
-        type: contentType,
+        type: normalizedType as ContentType,
         tone,
         tags,
         status: "DRAFT",

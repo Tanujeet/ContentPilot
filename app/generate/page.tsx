@@ -45,10 +45,9 @@ const Page = () => {
         tags,
       });
 
-      // backend se html aa rahi hai
-      setGeneratedContent(res.data.html || "No content generated");
+      setGeneratedContent(res.data.html || "<p>No content generated.</p>");
     } catch (e) {
-      console.error("failed to generate data", e);
+      console.error("Failed to generate data:", e);
       setGeneratedContent(
         "<p>Failed to generate content. Please try again.</p>"
       );
@@ -117,22 +116,24 @@ const Page = () => {
           Generate Content
         </Button>
 
-        {/* Single Dialog */}
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
               <DialogTitle className="text-black">
-                {loading ? "Generating Content" : "Your Generated Content"}
+                {loading ? "Generating Content..." : "Your Generated Content"}
               </DialogTitle>
               <DialogDescription asChild>
                 {loading ? (
                   <div className="flex items-center gap-2">
                     <Spinner />
+                    <span>Please wait...</span>
                   </div>
                 ) : (
                   <div
                     className="prose prose-lg max-w-none"
-                    dangerouslySetInnerHTML={{ __html: generatedContent || "" }}
+                    dangerouslySetInnerHTML={{
+                      __html: generatedContent || "",
+                    }}
                   />
                 )}
               </DialogDescription>
