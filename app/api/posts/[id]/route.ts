@@ -78,3 +78,27 @@ export async function DELETE(
     return new NextResponse("Internal server error", { status: 500 });
   }
 }
+
+
+
+export async function PATCH(
+  req: NextRequest,
+  { params: paramsPromise }: { params: Promise<{ id: string }> }
+) {
+  const { userId } = await auth();
+  if (!userId) {
+    return new NextResponse("Unautorised", { status: 404 });
+  }
+  const { id } = await paramsPromise;
+  try {
+    const updatedPost = await prisma.post.update({
+      where: { id },
+      data: { status: "published", publishedAt: new Date() }, // publishedAt optional
+    });
+
+    return NextResponse.json(updatedPost);
+  } catch (e) {
+    console.error(e);
+    return new NextResponse("Failed to publish post", { status: 500 });
+  }
+}
