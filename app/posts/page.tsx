@@ -172,7 +172,7 @@ const Page = () => {
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-black">
               {viewLoading ? "Loading..." : viewPost?.title}
             </DialogTitle>
             <DialogDescription>
@@ -180,7 +180,7 @@ const Page = () => {
                 <p>Loading post content...</p>
               ) : (
                 <div
-                  className="prose prose-lg max-w-none"
+                  className="prose prose-lg max-w-none font-bold"
                   dangerouslySetInnerHTML={{ __html: viewPost?.content || "" }}
                 />
               )}

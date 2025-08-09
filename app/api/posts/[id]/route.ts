@@ -108,7 +108,7 @@ export async function GET(
   { params: paramsPromise }: { params: Promise<{ id: string }> }
 ) {
   const { userId } = await auth();
-  if (userId) {
+  if (!userId) {
     return new NextResponse("Unauthorised", { status: 404 });
   }
   const { id } = await paramsPromise;
@@ -119,7 +119,7 @@ export async function GET(
     if (!post || post.userId !== userId) {
       return new NextResponse("Not found", { status: 404 });
     }
-    return NextResponse.json
+    return NextResponse.json(post);
   } catch (e) {
     console.error("Failed to fetch data", e);
   }
