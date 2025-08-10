@@ -80,8 +80,8 @@ Return ONLY HTML with:
       .trim();
 
     // Extract <h1> as title
-    let titleMatch = cleanedOutput.match(/<h1[^>]*>(.*?)<\/h1>/i);
-    let extractedTitle = titleMatch ? titleMatch[1].trim() : idea;
+   const titleMatch = cleanedOutput.match(/<h1[^>]*>(.*?)<\/h1>/i);
+   const extractedTitle = titleMatch ? titleMatch[1].trim() : idea;
 
     // Save generation log
     await prisma.generation.create({
