@@ -42,6 +42,7 @@ const Page = () => {
   const [viewOpen, setViewOpen] = useState(false);
   const [viewPost, setViewPost] = useState<Post | null>(null);
   const [viewLoading, setViewLoading] = useState(false);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -57,6 +58,9 @@ const Page = () => {
     };
     fetchContent();
   }, []);
+  const filteredPosts = posts.filter((post) =>
+    post.title.toLowerCase().includes(query.toLowerCase())
+  );
 
   const handleView = async (postId: string) => {
     setViewOpen(true);
@@ -105,11 +109,20 @@ const Page = () => {
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
   return (
     <main className="p-10">
       <section>
         <h1 className="text-4xl font-bold mb-6">Post</h1>
-        <Input placeholder="Search" className="text-white" />
+        <Input
+          placeholder="Search"
+          className="text-white"
+          value={query}
+          onChange={handleChange}
+        />
       </section>
       <section className="mt-10">
         {loading ? (
@@ -120,7 +133,7 @@ const Page = () => {
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-6 mt-10">
-            {posts.map((post, idx) => (
+            {filteredPosts.map((post, idx) => (
               <Card key={idx} className="bg-[#1A1325] text-white relative">
                 {/* Top right button */}
                 <div className="absolute top-2 right-2">
