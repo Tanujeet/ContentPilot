@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { ContentType } from "@prisma/client";
 
 const COHERE_API_KEY = process.env.COHERE_API_KEY;
 const COHERE_URL = "https://api.cohere.ai/v1/generate";
