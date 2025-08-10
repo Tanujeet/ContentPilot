@@ -30,7 +30,7 @@ export async function GET(
 }
 
 export async function PUT(
-  req: NextRequest,
+  req: Request,
   { params: paramsPromise }: { params: Promise<{ id: string }> }
 ) {
   const { userId } = await auth();
@@ -77,11 +77,14 @@ export async function PUT(
   }
 }
 
-export async function DELETE({
-  params: paramsPromise,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export async function DELETE(
+  req: Request,
+  {
+    params: paramsPromise,
+  }: {
+    params: Promise<{ id: string }>;
+  }
+) {
   const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorised", { status: 404 });
@@ -106,11 +109,14 @@ export async function DELETE({
   }
 }
 
-export async function PATCH({
-  params: paramsPromise,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export async function PATCH(
+  req: Request,
+  {
+    params: paramsPromise,
+  }: {
+    params: Promise<{ id: string }>;
+  }
+) {
   const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unautorised", { status: 404 });
