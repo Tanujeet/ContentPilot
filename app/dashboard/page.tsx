@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -13,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "@/lib/axios";
-import { error } from "console";
+
 type Activity = {
   title: string;
   status: string;
