@@ -3,6 +3,29 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 
+export async function GET({
+  params: paramsPromise,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { userId } = await auth();
+  if (!userId) {
+    return new NextResponse("Unauthorised", { status: 404 });
+  }
+  const { id } = await paramsPromise;
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id },
+    });
+    if (!post || post.userId !== userId) {
+      return new NextResponse("Not found", { status: 404 });
+    }
+    return NextResponse.json(post);
+  } catch (e) {
+    console.error("Failed to fetch data", e);
+  }
+}
+
 export async function PUT(
   req: NextRequest,
   { params: paramsPromise }: { params: Promise<{ id: string }> }
@@ -103,25 +126,3 @@ export async function PATCH({
   }
 }
 
-export async function GET({
-  params: paramsPromise,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { userId } = await auth();
-  if (!userId) {
-    return new NextResponse("Unauthorised", { status: 404 });
-  }
-  const { id } = await paramsPromise;
-  try {
-    const post = await prisma.post.findUnique({
-      where: { id },
-    });
-    if (!post || post.userId !== userId) {
-      return new NextResponse("Not found", { status: 404 });
-    }
-    return NextResponse.json(post);
-  } catch (e) {
-    console.error("Failed to fetch data", e);
-  }
-}
