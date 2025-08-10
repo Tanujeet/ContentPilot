@@ -38,15 +38,7 @@ export const SidebarNav = () => {
         </nav>
       </div>
 
-      <div className="px-2">
-        <Link
-          href="/posts/new"
-          className="bg-[#8A63F8] hover:bg-[#9e78fa] transition text-white text-sm font-medium flex items-center justify-center gap-2 py-2 rounded-md"
-        >
-          <IconPlus size={16} />
-          New Post
-        </Link>
-      </div>
+      <div className="px-2"></div>
     </aside>
   );
 };

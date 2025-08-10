@@ -42,7 +42,7 @@ const Page = () => {
   const [viewOpen, setViewOpen] = useState(false);
   const [viewPost, setViewPost] = useState<Post | null>(null);
   const [viewLoading, setViewLoading] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<string>("");
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -109,10 +109,6 @@ const Page = () => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
-
   return (
     <main className="p-10">
       <section>
@@ -121,7 +117,7 @@ const Page = () => {
           placeholder="Search"
           className="text-white"
           value={query}
-          onChange={handleChange}
+          onChange={(e) => setQuery(e.target.value)}
         />
       </section>
       <section className="mt-10">
