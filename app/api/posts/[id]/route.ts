@@ -3,11 +3,14 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET({
-  params: paramsPromise,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export async function GET(
+  req: Request,
+  {
+    params: paramsPromise,
+  }: {
+    params: Promise<{ id: string }>;
+  }
+) {
   const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorised", { status: 404 });
